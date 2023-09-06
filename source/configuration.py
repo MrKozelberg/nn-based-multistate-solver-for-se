@@ -6,14 +6,14 @@ class Configuration():
   
   def __init__(self, configurationFileName: str):
     """Initialize model configuration"""
-    self.readConfigurationDataFrame(configurationFileName)
-    self.chooseDevice()
+    self.defConfigurationFromFile(configurationFileName)
+    self.defAndChooseDevice()
 
-  def chooseDevice(self):
+  def defAndChooseDevice(self):
     """Choose device"""
     self.device = "cuda" if torch.cuda.is_available() else "cpu"
   
-  def readConfigurationDataFrame(self, configurationFileName: str):
+  def defConfigurationFromFile(self, configurationFileName: str):
     """Read model configuration data from a data frame"""
     configurationDataFrame = pd.read_csv(configurationFileName)
     self.activationFunction = \
