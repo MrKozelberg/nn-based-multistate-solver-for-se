@@ -1,2 +1,0 @@
-activationFunction tanh
-N 8

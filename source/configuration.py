@@ -25,47 +25,67 @@ class Configuration():
         configurationDataFrame['name']=='amplitude function' \
       ]['value'].to_string(index=False)
     self.hiddenLayerSize = \
-      configurationDataFrame[ \
+      int(configurationDataFrame[ \
         configurationDataFrame['name']=='hidden layer size' \
-      ]['value'].to_string(index=False)
+      ]['value'].to_string(index=False))
     self.coordinateSpaceDim = \
-      configurationDataFrame[ \
+      int(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='coordinate space dimension' \
       ]['value'].to_string(index=False)
+      )
     self.numberOfStates = \
-      configurationDataFrame[ \
+      int(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='number of states' \
       ]['value'].to_string(index=False)
+      )
     self.batchSize = \
-      configurationDataFrame[ \
+      int(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='batch size' \
       ]['value'].to_string(index=False)
+      )
     self.initialLearningRate = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='initial learning rate' \
       ]['value'].to_string(index=False)
+      )
     self.weightDecay = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='weight decay' \
       ]['value'].to_string(index=False)
+      )
     self.residualTermWeight = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='residual term weight' \
       ]['value'].to_string(index=False)
+      )
     self.normalisationTermWeight = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='normalisation term weight' \
       ]['value'].to_string(index=False)
+      )
     self.orthogonalisationTermWeight = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='orthogonalisation term weight' \
       ]['value'].to_string(index=False)
+      )
     self.energyTermWeight = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='energy term weigth' \
       ]['value'].to_string(index=False)
+      )
     self.metropolisAlgorithmParameter = \
-      configurationDataFrame[ \
+      float(
+        configurationDataFrame[ \
         configurationDataFrame['name']=='metropolis algorithm parameter' \
       ]['value'].to_string(index=False)
+      )
     

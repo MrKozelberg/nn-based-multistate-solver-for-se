@@ -1,30 +1,32 @@
 # Imports
 from imports import *
-from configuration import configuration
+from configuration import Configuration
 from amplitude_functions import Gaussian
 from neural_network import NeuralNetwork
-from metropolis_algorithm import MetropolisAlgorithm
 
 class TrialFuncion(nn.Module):
   """Trial function class"""
 
-  def __init__(self, configuration: Configuration):
+  def __init__(self, configuration: Configuration, name: str):
     """Initialize trial function"""
     super().__init__()
+    self.name = name
+    self.MODELS_PATH = "../models/"
+    self.PATH = self.MODELS_PATH + self.name + ".pt"
     self.defDevice(configuration)
     self.neuralNetwork = NeuralNetwork(configuration)
     self.defAmplitudeFunction(configuration)
 
   def defDevice(self, configuration: Configuration):
-    """Set device"""    
+    """Define device"""    
     self.device = configuration.device
 
   def defAmplitudeFunction(self, configuration: Configuration):
-    """Set amplitude function"""
+    """Define amplitude function"""
     if configuration.amplitudeFunction == 'gaussian':
-      self.amplitudeFunction = Gaussian()
+      self.amplitudeFunction = Gaussian(configuration)
     else:
-      print("INVALID AMPLITUDE FUNCTION")
+      print("INVALID AMPLITUDE FUNCTION NAME")
       sys.exit(1)
 
   def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -46,10 +48,10 @@ class TrialFuncion(nn.Module):
     theAmplitudeFunctionGradient = self.amplitudeFunction.gradient(x)
     theNeuralNetwork = self.neuralNetwork(x)
     theNeuralNetworkGradient = self.neuralNetwork.gradient(x)
-    for d in range(self.coordinateSpaceDim):
-      gradient[:, d, :] = (
-        theNeuralNetworkGradient[:, d, :] * theAmplitudeFunction
-        + theNeuralNetwork * theAmplitudeFunctionGradient[:, d, :]
+    for coordinateNumber in range(self.neuralNetwork.coordinateSpaceDim):
+      gradient[:, coordinateNumber, :] = (
+        theNeuralNetworkGradient[:, coordinateNumber, :] * theAmplitudeFunction
+        + theNeuralNetwork * theAmplitudeFunctionGradient[:, coordinateNumber, :]
       )
     return gradient
 
@@ -99,7 +101,7 @@ class TrialFuncion(nn.Module):
       )
     spectrum = spectrum / self.norm(x)
     return spectrum
-      
+    
 
 
 
