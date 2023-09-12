@@ -1,25 +1,25 @@
 # Imports
 from imports import *
-from configuration import Configuration
+from hyperparameters import Hyperparameters
 
 class NeuralNetwork(nn.Module):
   """Class for a neural network"""
 
-  def __init__(self, configuration: Configuration):
+  def __init__(self, hyperparameters: Hyperparameters):
     super().__init__()
-    self.coordinateSpaceDim = configuration.coordinateSpaceDim
-    self.numberOfStates = configuration.numberOfStates
-    self.hiddenLayerSize = configuration.hiddenLayerSize
-    self.device = configuration.device
-    self.defActivationFunction(configuration)
+    self.coordinateSpaceDim = hyperparameters.coordinateSpaceDim
+    self.numberOfStates = hyperparameters.numberOfStates
+    self.hiddenLayerSize = hyperparameters.hiddenLayerSize
+    self.device = hyperparameters.device
+    self.defActivationFunction(hyperparameters)
     self.NUMBER_OF_HIDDEN_LAYERS = 3
     self.defAndInitStack()
     self.stack.to(self.device)
 
-  def defActivationFunction(self, configuration: Configuration):
-    if configuration.activationFunction == 'sin':
+  def defActivationFunction(self, hyperparameters: Hyperparameters):
+    if hyperparameters.activationFunction == 'sin':
       self.activationFunction = CustomSin()
-    elif configuration.activationFunction == 'tanh':
+    elif hyperparameters.activationFunction == 'tanh':
       self.activationFunction = CustomTanh()
     else:
       print("INVALID ACTIVATION FUNCTION NAME")

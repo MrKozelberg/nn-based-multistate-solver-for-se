@@ -1,15 +1,15 @@
 # Imports
 from imports import *
-from configuration import Configuration
+from hyperparameters import Hyperparameters
 
 class Gaussian(nn.Module):
   """Custom Gaussian amplitude function class"""
 
-  def __init__(self, configuration: Configuration):
+  def __init__(self, hyperparameters: Hyperparameters):
     super().__init__()
-    self.coordinateSpaceDim = configuration.coordinateSpaceDim
-    self.numberOfStates = configuration.numberOfStates
-    self.device = configuration.device
+    self.coordinateSpaceDim = hyperparameters.coordinateSpaceDim
+    self.numberOfStates = hyperparameters.numberOfStates
+    self.device = hyperparameters.device
 
   def forward(self, x: torch.Tensor) -> torch.Tensor:
     forward = torch.ones(

@@ -1,30 +1,29 @@
 # Imports
 from imports import *
-from configuration import Configuration
+from hyperparameters import Hyperparameters
 from amplitude_functions import Gaussian
 from neural_network import NeuralNetwork
 
-class TrialFuncion(nn.Module):
+class TrialFunction(nn.Module):
   """Trial function class"""
 
-  def __init__(self, configuration: Configuration, name: str):
+  def __init__(self, hyperparameters: Hyperparameters, name: str):
     """Initialize trial function"""
     super().__init__()
     self.name = name
-    self.MODELS_PATH = "../models/"
-    self.PATH = self.MODELS_PATH + self.name + ".pt"
-    self.defDevice(configuration)
-    self.neuralNetwork = NeuralNetwork(configuration)
-    self.defAmplitudeFunction(configuration)
+    self.PATH = "../models/" + self.name + ".pt"
+    self.defDevice(hyperparameters)
+    self.neuralNetwork = NeuralNetwork(hyperparameters)
+    self.defAmplitudeFunction(hyperparameters)
 
-  def defDevice(self, configuration: Configuration):
+  def defDevice(self, hyperparameters: Hyperparameters):
     """Define device"""    
-    self.device = configuration.device
+    self.device = hyperparameters.device
 
-  def defAmplitudeFunction(self, configuration: Configuration):
+  def defAmplitudeFunction(self, hyperparameters: Hyperparameters):
     """Define amplitude function"""
-    if configuration.amplitudeFunction == 'gaussian':
-      self.amplitudeFunction = Gaussian(configuration)
+    if hyperparameters.amplitudeFunction == 'gaussian':
+      self.amplitudeFunction = Gaussian(hyperparameters)
     else:
       print("INVALID AMPLITUDE FUNCTION NAME")
       sys.exit(1)
@@ -101,7 +100,54 @@ class TrialFuncion(nn.Module):
       )
     spectrum = spectrum / self.norm(x)
     return spectrum
-    
+
+  def totalSqueredResidual(self, x: torch.Tensor) -> torch.Tensor:
+    forward = self.forward(x)
+    laplacian = self.laplacian(x)
+    weightFunction = self.weightFunction(x)
+    spectrum = self.spectrum(x)
+    norm = self.norm(x)
+    return sum(
+      [
+        torch.mean(
+          (
+            -0.5 * laplacian[:, stateNumber]
+            + 0.5 * forward[:, stateNumber] * torch.sum(x**2, axis=1)
+            - forward[:, stateNumber] * spectrum[stateNumber]
+          )** 2 / weightFunction
+        ) / norm[stateNumber]
+        for stateNumber in range(self.neuralNetwork.numberOfStates)
+      ]
+    )
+
+  def totalNormalisationError(self, x: torch.Tensor) -> torch.Tensor:
+    return torch.sum((self.norm(x) - torch.tensor(1, device=self.device)) ** 2)
+
+  def totalOrthogonalisationError(self, x: torch.Tensor) -> torch.Tensor:
+    orthogonError = torch.zeros(
+      (
+        self.neuralNetwork.numberOfStates, 
+        self.neuralNetwork.numberOfStates
+      ),
+      device=self.device
+    )
+    forward = self.forward(x)
+    weightFunction = self.weightFunction(x)
+    norm = self.norm(x)
+    for stateNumber1 in range(1, self.neuralNetwork.numberOfStates):
+      for stateNumber2 in range(0, stateNumber1):
+        orthogonError[stateNumber1, stateNumber2] = (
+          torch.square(
+            torch.mean(
+              forward[:, stateNumber1] 
+              * forward[:, stateNumber2]
+              / weightFunction
+            )
+          )
+          / norm[stateNumber1]
+          / norm[stateNumber2]
+        )
+    return torch.sum(orthogonError)
 
 
 
