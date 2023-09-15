@@ -1,0 +1,15 @@
+name,value
+activation function,sin
+amplitude function,gaussian
+hidden layer size,100
+coordinate space dimension,5
+number of states,5
+batch size,8192
+initial learning rate,0.001
+weight decay,0.001
+residual term weight,1.0
+normalisation term weight,1.0
+orthogonalisation term weight,40.0
+energy term weigth,1.0
+metropolis algorithm parameter,1.0
+number of training steps,15000

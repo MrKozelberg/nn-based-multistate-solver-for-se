@@ -2,7 +2,7 @@ name,value
 activation function,sin
 amplitude function,gaussian
 hidden layer size,100
-coordinate space dimension,3
+coordinate space dimension,6
 number of states,5
 batch size,8192
 initial learning rate,0.001
