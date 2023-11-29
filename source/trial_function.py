@@ -15,6 +15,7 @@ class TrialFunction(nn.Module):
     self.defDevice(hyperparameters)
     self.neuralNetwork = NeuralNetwork(hyperparameters)
     self.defAmplitudeFunction(hyperparameters)
+    # self.spectrum_values = torch.ones((hyperparameters.numberOfStates)) * 999.0
 
   def defDevice(self, hyperparameters: Hyperparameters):
     """Define device"""    
@@ -68,7 +69,23 @@ class TrialFunction(nn.Module):
   def weightFunction(self, x: torch.Tensor) -> torch.Tensor:
     weightFunction = torch.mean(self.forward(x)**2, axis=1)
     return weightFunction
-
+    # weightFunction = torch.ones(
+    #   (
+    #     len(x),
+    #     self.neuralNetwork.numberOfStates
+    #   ),
+    #   device=self.device
+    # )
+    # forward = self.forward(x).detach()
+    # laplacian = self.laplacian(x).detach()
+    # for stateNumber in range(self.neuralNetwork.numberOfStates):
+    #   weightFunction[:,stateNumber] = (
+    #       -0.5 * laplacian[:, stateNumber]
+    #       + 0.5 * torch.sum(x*x, axis=1) * forward[:, stateNumber]
+    #       - forward[:, stateNumber] * self.spectrum_values[stateNumber]
+    #   )** 2
+    # return weightFunction.mean(axis=1)
+  
   def norm(self, x: torch.Tensor) -> torch.Tensor:
     norm = torch.zeros(
       self.neuralNetwork.numberOfStates,
@@ -99,6 +116,7 @@ class TrialFunction(nn.Module):
         ) / weightFunction
       )
     spectrum = spectrum / self.norm(x)
+    # self.spectrum_values = spectrum.detach()
     return spectrum
 
   def totalSqueredResidual(self, x: torch.Tensor) -> torch.Tensor:

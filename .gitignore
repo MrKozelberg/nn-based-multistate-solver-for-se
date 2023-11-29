@@ -1,3 +1,8 @@
+# Data
+*.csv
+*.pt
+images/
+
 # Some directories
 data/old/
 .idea/
