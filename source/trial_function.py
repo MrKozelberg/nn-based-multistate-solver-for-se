@@ -138,6 +138,20 @@ class TrialFunction(nn.Module):
       ]
     )
 
+  def squeredResidual(self, x: torch.Tensor, stateNumber: int) -> torch.Tensor:
+    forward = self.forward(x)
+    laplacian = self.laplacian(x)
+    weightFunction = self.weightFunction(x)
+    spectrum = self.spectrum(x)
+    norm = self.norm(x)
+    return torch.mean(
+          (
+            -0.5 * laplacian[:, stateNumber]
+            + 0.5 * forward[:, stateNumber] * torch.sum(x**2, axis=1)
+            - forward[:, stateNumber] * spectrum[stateNumber]
+          )** 2 / weightFunction
+        ) / norm[stateNumber]
+
   def totalNormalisationError(self, x: torch.Tensor) -> torch.Tensor:
     return torch.sum((self.norm(x) - torch.tensor(1, device=self.device)) ** 2)
 
